@@ -3,7 +3,6 @@ scrape.py
 Columbus Crew xG Dashboard — 2025 MLS Season
 -------------------------------------------------
 Pulls xG data directly from FBref using pandas.read_html().
-No ScraperFC needed — simpler and more reliable.
 
 Run from the project root:
     python python/scrape.py

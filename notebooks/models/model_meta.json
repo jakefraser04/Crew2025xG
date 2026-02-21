@@ -1,0 +1,16 @@
+{
+  "features": [
+    "distance",
+    "angle_deg",
+    "is_header",
+    "under_pressure",
+    "is_open_play",
+    "distance_sq"
+  ],
+  "target": "is_goal",
+  "auc": 0.7857,
+  "log_loss": 0.3359,
+  "brier_score": 0.1042,
+  "training_shots": 203,
+  "notes": "Logistic regression trained on StatsBomb open data. Apply to any shot with distance, angle, technique, pressure, and play pattern."
+}
