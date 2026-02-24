@@ -1,0 +1,20 @@
+[
+  {
+    "date": "2026-02-22",
+    "opponent": "Portland Timbers FC",
+    "venue": "Away",
+    "goals_for": 2,
+    "goals_ag": 3,
+    "xg_for": 1.09,
+    "xg_ag": 1.29,
+    "xg_diff": -0.19,
+    "result": "L",
+    "xg_result": "xD",
+    "deserved": false,
+    "cumulative_xg": 1.09,
+    "cumulative_xga": 1.29,
+    "cumulative_goals": 2,
+    "rolling_xg_for": 1.09,
+    "rolling_xg_ag": 1.29
+  }
+]
