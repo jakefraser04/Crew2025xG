@@ -77,8 +77,8 @@ RESULT_COLORS = {
 ASSETS_DIR = f'assets/{SEASON}'          # e.g. 'assets/2026'
 DATA_DIR   = f'dashboard/data/{SEASON}'  # e.g. 'dashboard/data/2026'
 PROCESSED  = f'data/processed/{SEASON}'  # e.g. 'data/processed/2026'
-MODEL_PATH = 'models/xg_model.pkl'       # our trained model (same for all seasons)
-META_PATH  = 'models/model_meta.json'    # model metadata (AUC, log loss, etc.)
+MODEL_PATH = 'notebooks/models/xg_model.pkl'       # our trained model (same for all seasons)
+META_PATH  = 'notebooks/models/model_meta.json'    # model metadata (AUC, log loss, etc.)
 
 # os.makedirs creates a folder if it doesn't already exist
 # exist_ok=True means "don't crash if the folder is already there"

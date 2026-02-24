@@ -1,0 +1,2 @@
+date,opponent,venue,goals_for,goals_ag,xg_for,xg_ag,xg_diff,result,xg_result,deserved,cumulative_xg,cumulative_xga,cumulative_goals,rolling_xg_for,rolling_xg_ag
+2026-02-22,Portland Timbers FC,Away,2,3,1.09,1.29,-0.19,L,xD,False,1.09,1.29,2,1.09,1.29
