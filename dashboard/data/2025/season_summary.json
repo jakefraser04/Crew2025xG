@@ -1,0 +1,15 @@
+{
+  "team": "Columbus Crew",
+  "season": "2025",
+  "matches": 37,
+  "wins": 15,
+  "draws": 11,
+  "losses": 11,
+  "total_xg_for": 61.53,
+  "total_xg_ag": 53.2,
+  "total_goals": 57,
+  "xg_diff": 8.26,
+  "lucky_wins": 2,
+  "unlucky_losses": 3,
+  "deserved_pct": 40.5
+}

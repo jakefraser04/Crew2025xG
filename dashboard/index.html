@@ -3,24 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Columbus Crew — xG Dashboard 2025</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<title>Columbus Crew — xG Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold:     #F5C518;
-    --gold-dim: #8A6D10;
-    --black:    #0C0B08;
-    --surface:  #161410;
-    --card:     #1E1C16;
-    --border:   #2E2B20;
-    --muted:    #6B6650;
-    --cream:    #F0EBD8;
-    --win:      #27AE60;
-    --draw:     #E67E22;
-    --loss:     #C0392B;
+    --gold:    #F5C518;
+    --black:   #0C0B08;
+    --surface: #161410;
+    --card:    #1E1C16;
+    --border:  #2E2B20;
+    --muted:   #6B6650;
+    --cream:   #F0EBD8;
+    --win:     #27AE60;
+    --draw:    #E67E22;
+    --loss:    #C0392B;
   }
 
   html { scroll-behavior: smooth; }
@@ -31,67 +29,46 @@
     font-family: 'Barlow', sans-serif;
     font-weight: 300;
     min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
   }
 
   /* ── HERO ── */
   .hero {
-    position: relative;
     padding: 4rem 2rem 3rem;
     border-bottom: 1px solid var(--border);
+    position: relative;
     overflow: hidden;
   }
 
   .hero::after {
     content: 'xG';
     position: absolute;
-    right: -2rem;
-    top: -2rem;
+    right: -2rem; top: -2rem;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 22rem;
-    color: rgba(245, 197, 24, 0.03);
+    color: rgba(245,197,24,0.03);
     pointer-events: none;
     line-height: 1;
-    user-select: none;
   }
 
-  .hero-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-  }
+  .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
 
-  .hero-eyebrow {
+  .eyebrow {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.25em;
     color: var(--gold);
     text-transform: uppercase;
     margin-bottom: 0.75rem;
-    animation: fadeUp 0.6s ease both;
   }
 
-  .hero-title {
+  h1 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(3.5rem, 10vw, 7rem);
     line-height: 0.92;
     color: var(--cream);
-    animation: fadeUp 0.6s 0.1s ease both;
   }
 
-  .hero-title span { color: var(--gold); }
+  h1 span { color: var(--gold); }
 
   .hero-sub {
     margin-top: 1.2rem;
@@ -99,25 +76,56 @@
     color: var(--muted);
     max-width: 560px;
     line-height: 1.65;
-    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  /* ── SEASON TOGGLE ── */
+  /* This is the key new UI element — lets users switch between 2025 and 2026 */
+  .season-toggle {
+    display: inline-flex;
+    margin-top: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .season-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 0.6rem 1.6rem;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  /* .active class is added by JavaScript when a season is selected */
+  .season-btn.active {
+    background: var(--gold);
+    color: var(--black);
+  }
+
+  .season-btn:hover:not(.active) {
+    background: rgba(245,197,24,0.08);
+    color: var(--cream);
   }
 
   /* ── STAT BAR ── */
   .stat-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
-    animation: fadeUp 0.6s 0.3s ease both;
   }
 
   .stat {
     flex: 1;
-    min-width: 130px;
-    padding: 1.1rem 1.4rem;
+    min-width: 120px;
+    padding: 1rem 1.4rem;
     border-right: 1px solid var(--border);
     transition: background 0.2s;
   }
@@ -127,14 +135,14 @@
 
   .stat-value {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: var(--gold);
     line-height: 1;
   }
 
   .stat-label {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--muted);
@@ -143,10 +151,8 @@
 
   /* ── NAV ── */
   nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(12, 11, 8, 0.92);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(12,11,8,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
@@ -156,7 +162,6 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    gap: 0;
   }
 
   .nav-link {
@@ -171,23 +176,12 @@
     transition: color 0.2s, border-color 0.2s;
   }
 
-  .nav-link:hover {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
+  .nav-link:hover { color: var(--gold); border-bottom-color: var(--gold); }
 
   /* ── MAIN ── */
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 3rem 2rem 6rem;
-  }
+  main { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 6rem; }
 
-  /* ── SECTION ── */
-  .section {
-    margin-bottom: 4rem;
-    animation: fadeUp 0.5s ease both;
-  }
+  .section { margin-bottom: 4rem; }
 
   .section-header {
     display: flex;
@@ -210,11 +204,10 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.8rem;
     color: var(--cream);
-    letter-spacing: 0.02em;
   }
 
   .section-desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--muted);
     margin-left: auto;
     max-width: 340px;
@@ -222,7 +215,7 @@
     line-height: 1.5;
   }
 
-  /* ── CHART CARD ── */
+  /* ── CARDS ── */
   .chart-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -240,48 +233,52 @@
     background: linear-gradient(90deg, var(--gold), transparent);
   }
 
-  .chart-wrap {
-    position: relative;
-    width: 100%;
+  .img-chart { width: 100%; border-radius: 6px; display: block; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  /* ── NO DATA STATE ── */
+  /* Shown when 2026 data hasn't been loaded yet */
+  .no-data {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
   }
 
-  /* ── IMAGE CHARTS ── */
-  .img-chart {
-    width: 100%;
-    border-radius: 6px;
-    display: block;
+  .no-data-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.4;
   }
 
-  /* ── TWO COL GRID ── */
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+  .no-data h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
   }
 
-  @media (max-width: 768px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .section-desc { display: none; }
-    .hero::after { display: none; }
+  .no-data p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .no-data code {
+    background: var(--border);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--gold);
   }
 
   /* ── MATCH TABLE ── */
-  .table-wrap {
-    overflow-x: auto;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
+  .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 
-  thead tr {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-  }
+  thead tr { background: var(--surface); border-bottom: 1px solid var(--border); }
 
   th {
     font-family: 'Barlow Condensed', sans-serif;
@@ -294,179 +291,86 @@
     white-space: nowrap;
   }
 
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: rgba(245,197,24,0.03); }
-
-  td {
-    padding: 0.75rem 1rem;
-    color: var(--cream);
-    white-space: nowrap;
-  }
+  td { padding: 0.75rem 1rem; color: var(--cream); white-space: nowrap; }
 
   .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px; height: 26px;
-    border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 4px;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.8rem; font-weight: 600;
   }
 
-  .badge-W { background: rgba(39,174,96,0.2);  color: var(--win);  }
+  .badge-W { background: rgba(39,174,96,0.2);  color: var(--win); }
   .badge-D { background: rgba(230,126,34,0.2); color: var(--draw); }
   .badge-L { background: rgba(192,57,43,0.2);  color: var(--loss); }
 
-  .xg-bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .xg-bar {
-    height: 6px;
-    border-radius: 3px;
-    background: var(--gold);
-    min-width: 2px;
-  }
-
+  .xg-bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
+  .xg-bar { height: 6px; border-radius: 3px; background: var(--gold); min-width: 2px; }
   .xg-bar.against { background: var(--loss); }
 
   .undeserved {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    padding: 0.15em 0.5em;
-    border-radius: 3px;
-    background: rgba(245,197,24,0.15);
-    color: var(--gold);
+    font-size: 0.65rem; letter-spacing: 0.08em;
+    padding: 0.15em 0.5em; border-radius: 3px;
+    background: rgba(245,197,24,0.15); color: var(--gold);
     text-transform: uppercase;
   }
 
   /* ── INSIGHTS ── */
-  .insights-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
-
-  @media (max-width: 768px) {
-    .insights-grid { grid-template-columns: 1fr; }
-  }
+  .insights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 
   .insight-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.4rem;
-    position: relative;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.4rem; position: relative;
   }
 
   .insight-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--gold);
-    border-radius: 10px 10px 0 0;
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: var(--gold); border-radius: 10px 10px 0 0;
   }
 
-  .insight-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3rem;
-    color: var(--gold);
-    line-height: 1;
-  }
-
-  .insight-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 0.2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .insight-text {
-    font-size: 0.88rem;
-    color: var(--cream);
-    line-height: 1.6;
-    opacity: 0.85;
-  }
+  .insight-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--gold); line-height: 1; }
+  .insight-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0.2rem 0 0.75rem; }
+  .insight-text { font-size: 0.88rem; color: var(--cream); line-height: 1.6; opacity: 0.85; }
 
   /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem;
-    text-align: center;
-  }
-
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-text {
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-
-  .footer-text a {
-    color: var(--gold);
-    text-decoration: none;
-  }
-
+  footer { border-top: 1px solid var(--border); padding: 2rem; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-text { font-size: 0.8rem; color: var(--muted); }
+  .footer-text a { color: var(--gold); text-decoration: none; }
   .footer-text a:hover { text-decoration: underline; }
 
-  /* ── LOADING ── */
-  .loading {
-    text-align: center;
-    padding: 3rem;
-    color: var(--muted);
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.1em;
-    font-size: 0.85rem;
+  @media (max-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .insights-grid { grid-template-columns: 1fr; }
+    .section-desc { display: none; }
   }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .section:nth-child(1) { animation-delay: 0.05s; }
-  .section:nth-child(2) { animation-delay: 0.1s; }
-  .section:nth-child(3) { animation-delay: 0.15s; }
-  .section:nth-child(4) { animation-delay: 0.2s; }
-  .section:nth-child(5) { animation-delay: 0.25s; }
 </style>
 </head>
 <body>
 
-<!-- ── HERO ────────────────────────────────────────── -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-eyebrow">Columbus Crew SC · 2025 MLS Season · xG Analysis</div>
-    <h1 class="hero-title">Did They<br><span>Deserve</span><br>It?</h1>
+    <div class="eyebrow">Columbus Crew SC · xG Season Analysis</div>
+    <h1>Did They<br><span>Deserve</span><br>It?</h1>
     <p class="hero-sub">
-      A match-by-match Expected Goals analysis of the Columbus Crew's 2025 MLS season.
-      Built with a logistic regression xG model trained on StatsBomb open data,
-      applied to American Soccer Analysis match data.
+      A match-by-match Expected Goals analysis built with a logistic regression
+      model trained on StatsBomb data, applied to American Soccer Analysis match data.
     </p>
-    <div class="stat-bar" id="stat-bar">
-      <div class="stat"><div class="stat-value" id="stat-record">—</div><div class="stat-label">Season Record</div></div>
+
+    <!-- Season Toggle -->
+    <div class="season-toggle">
+      <button class="season-btn" onclick="setSeason('2025')" id="btn-2025">2025</button>
+      <button class="season-btn active" onclick="setSeason('2026')" id="btn-2026">2026</button>
+    </div>
+
+    <!-- Stat Bar — populated by JavaScript -->
+    <div class="stat-bar">
+      <div class="stat"><div class="stat-value" id="stat-record">—</div><div class="stat-label">Record</div></div>
       <div class="stat"><div class="stat-value" id="stat-xg-for">—</div><div class="stat-label">Total xG For</div></div>
       <div class="stat"><div class="stat-value" id="stat-xg-ag">—</div><div class="stat-label">Total xG Against</div></div>
       <div class="stat"><div class="stat-value" id="stat-goals">—</div><div class="stat-label">Actual Goals</div></div>
@@ -476,22 +380,18 @@
   </div>
 </section>
 
-<!-- ── NAV ─────────────────────────────────────────── -->
 <nav>
   <div class="nav-inner">
-    <a href="#trend"       class="nav-link">xG Trend</a>
+    <a href="#trend"        class="nav-link">xG Trend</a>
     <a href="#differential" class="nav-link">Differential</a>
-    <a href="#form"        class="nav-link">Form</a>
-    <a href="#breakdown"   class="nav-link">Home / Away</a>
-    <a href="#matches"     class="nav-link">All Matches</a>
-    <a href="#insights"    class="nav-link">Insights</a>
+    <a href="#form"         class="nav-link">Form</a>
+    <a href="#breakdown"    class="nav-link">Home / Away</a>
+    <a href="#matches"      class="nav-link">All Matches</a>
+    <a href="#insights"     class="nav-link">Insights</a>
   </div>
 </nav>
 
-<!-- ── MAIN ────────────────────────────────────────── -->
 <main>
-
-  <!-- Section 1: xG Trend -->
   <section class="section" id="trend">
     <div class="section-header">
       <span class="section-num">01</span>
@@ -499,23 +399,21 @@
       <p class="section-desc">The gap between lines reveals luck vs quality over the season</p>
     </div>
     <div class="chart-card">
-      <img src="../assets/xg_trend.png" alt="xG Trend" class="img-chart" id="img-trend">
+      <img id="img-trend" class="img-chart" alt="xG Trend">
     </div>
   </section>
 
-  <!-- Section 2: Differential -->
   <section class="section" id="differential">
     <div class="section-header">
       <span class="section-num">02</span>
       <h2 class="section-title">Match-by-Match xG Differential</h2>
-      <p class="section-desc">Positive = dominated the match. * = result didn't match xG.</p>
+      <p class="section-desc">Positive = dominated. * = result didn't match xG.</p>
     </div>
     <div class="chart-card">
-      <img src="../assets/xg_differential.png" alt="xG Differential" class="img-chart">
+      <img id="img-diff" class="img-chart" alt="xG Differential">
     </div>
   </section>
 
-  <!-- Section 3: Rolling Form -->
   <section class="section" id="form">
     <div class="section-header">
       <span class="section-num">03</span>
@@ -523,11 +421,10 @@
       <p class="section-desc">Momentum indicator — when were the Crew dominant?</p>
     </div>
     <div class="chart-card">
-      <img src="../assets/rolling_xg_form.png" alt="Rolling Form" class="img-chart">
+      <img id="img-form" class="img-chart" alt="Rolling Form">
     </div>
   </section>
 
-  <!-- Section 4: Home/Away + Heatmap -->
   <section class="section" id="breakdown">
     <div class="section-header">
       <span class="section-num">04</span>
@@ -535,16 +432,11 @@
       <p class="section-desc">Home/Away xG scatter and model probability heatmap</p>
     </div>
     <div class="grid-2">
-      <div class="chart-card">
-        <img src="../assets/home_away_xg.png" alt="Home Away" class="img-chart">
-      </div>
-      <div class="chart-card">
-        <img src="../assets/xg_heatmap.png" alt="xG Heatmap" class="img-chart">
-      </div>
+      <div class="chart-card"><img id="img-homeaway" class="img-chart" alt="Home Away"></div>
+      <div class="chart-card"><img id="img-heatmap" class="img-chart" alt="xG Heatmap"></div>
     </div>
   </section>
 
-  <!-- Section 5: Match Table -->
   <section class="section" id="matches">
     <div class="section-header">
       <span class="section-num">05</span>
@@ -553,65 +445,90 @@
     </div>
     <div class="chart-card">
       <div class="table-wrap">
-        <table id="match-table">
+        <table>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Opponent</th>
-              <th>Venue</th>
-              <th>Result</th>
-              <th>Score</th>
-              <th>xG For</th>
-              <th>xG Ag</th>
-              <th>xG Diff</th>
-              <th>Verdict</th>
+              <th>Date</th><th>Opponent</th><th>Venue</th><th>Result</th>
+              <th>Score</th><th>xG For</th><th>xG Ag</th><th>xG Diff</th><th>Verdict</th>
             </tr>
           </thead>
-          <tbody id="match-tbody">
-            <tr><td colspan="9" class="loading">Loading match data...</td></tr>
-          </tbody>
+          <tbody id="match-tbody"></tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- Section 6: Insights -->
   <section class="section" id="insights">
     <div class="section-header">
       <span class="section-num">06</span>
       <h2 class="section-title">Key Insights</h2>
-      <p class="section-desc">What the xG data tells us about the 2025 season</p>
+      <p class="section-desc">What the xG data tells us about this season</p>
     </div>
-    <div class="insights-grid" id="insights-grid">
-      <div class="loading">Loading...</div>
-    </div>
+    <div class="insights-grid" id="insights-grid"></div>
   </section>
-
 </main>
 
-<!-- ── FOOTER ───────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
     <p class="footer-text">
-      Built by <strong>Jake F.</strong> · xG model trained on
-      <a href="https://github.com/statsbomb/open-data" target="_blank">StatsBomb open data</a> ·
+      Built by <strong>Jake Fraser</strong> ·
+      xG model trained on <a href="https://github.com/statsbomb/open-data" target="_blank">StatsBomb open data</a> ·
       Match data via <a href="https://www.americansocceranalysis.com" target="_blank">American Soccer Analysis</a>
     </p>
     <p class="footer-text">
-      <a href="https://github.com/jakef/crew-xg-dashboard" target="_blank">View on GitHub →</a>
+      <a href="https://github.com/jakefraser04/Crew2025xG" target="_blank">View on GitHub →</a>
     </p>
   </div>
 </footer>
 
 <script>
-// ── Load JSON data ────────────────────────────────────────
-async function loadData() {
-  try {
-    const [matchRes, summaryRes] = await Promise.all([
-      fetch('../dashboard/data/match_xg.json'),
-      fetch('../dashboard/data/season_summary.json')
-    ]);
+// ── State ─────────────────────────────────────────────────
+// currentSeason tracks which season the user is viewing
+let currentSeason = '2026';
 
+
+// ── setSeason() ───────────────────────────────────────────
+// Called when user clicks a season button.
+// Updates the active button style, then loads that season's data.
+function setSeason(season) {
+  currentSeason = season;
+
+  // Remove 'active' class from all buttons
+  document.querySelectorAll('.season-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Add 'active' class to the clicked button
+  document.getElementById(`btn-${season}`).classList.add('active');
+
+  // Load data for the selected season
+  loadSeason(season);
+}
+
+
+// ── loadSeason() ──────────────────────────────────────────
+// Fetches JSON data for a given season and renders everything.
+// async/await lets us wait for fetch() to finish before continuing.
+async function loadSeason(season) {
+
+  // Update chart images immediately — src swap is instant
+  // The image path uses the season folder we created
+  document.getElementById('img-trend').src    = `assets/${season}/xg_trend.png`;
+  document.getElementById('img-diff').src     = `assets/${season}/xg_differential.png`;
+  document.getElementById('img-form').src     = `assets/${season}/rolling_xg_form.png`;
+  document.getElementById('img-homeaway').src = `assets/${season}/home_away_xg.png`;
+  document.getElementById('img-heatmap').src  = `assets/${season}/xg_heatmap.png`;
+
+  try {
+    // fetch() makes an HTTP request to load a file
+    // await pauses here until the response arrives
+    const [matchRes, summaryRes] = await Promise.all([
+      fetch(`dashboard/data/${season}/match_xg.json`),
+      fetch(`dashboard/data/${season}/season_summary.json`)
+    ]);
+    // Promise.all() runs both fetches at the same time (faster than sequential)
+
+    // .json() parses the response body as JSON
     const matches = await matchRes.json();
     const summary = await summaryRes.json();
 
@@ -620,15 +537,42 @@ async function loadData() {
     renderInsights(summary, matches);
 
   } catch (err) {
-    console.error('Failed to load data:', err);
-    document.getElementById('match-tbody').innerHTML =
-      '<tr><td colspan="9" class="loading">Could not load data. Make sure dashboard/data/ JSON files exist.</td></tr>';
+    // catch() runs if anything above throws an error (e.g. file not found)
+    showNoData(season);
   }
 }
 
 
-// ── Stat Bar ──────────────────────────────────────────────
+// ── showNoData() ──────────────────────────────────────────
+// Displays a friendly message when a season has no data yet.
+function showNoData(season) {
+  // Reset stat bar to dashes
+  ['stat-record','stat-xg-for','stat-xg-ag','stat-goals','stat-lucky','stat-unlucky']
+    .forEach(id => document.getElementById(id).textContent = '—');
+
+  // Show no-data message in the table
+  document.getElementById('match-tbody').innerHTML = `
+    <tr>
+      <td colspan="9">
+        <div class="no-data">
+          <div class="no-data-icon">⚽</div>
+          <h3>No ${season} Data Yet</h3>
+          <p>
+            After the first match, run:<br>
+            <code>python update_season.py --season ${season} --push</code>
+          </p>
+        </div>
+      </td>
+    </tr>`;
+
+  document.getElementById('insights-grid').innerHTML = '';
+}
+
+
+// ── renderStatBar() ───────────────────────────────────────
+// Populates the six headline stats at the top of the page.
 function renderStatBar(s) {
+  // textContent sets the visible text of an element
   document.getElementById('stat-record').textContent  = `${s.wins}W ${s.draws}D ${s.losses}L`;
   document.getElementById('stat-xg-for').textContent  = s.total_xg_for.toFixed(1);
   document.getElementById('stat-xg-ag').textContent   = s.total_xg_ag.toFixed(1);
@@ -638,20 +582,23 @@ function renderStatBar(s) {
 }
 
 
-// ── Match Table ───────────────────────────────────────────
+// ── renderMatchTable() ────────────────────────────────────
+// Builds the HTML table rows from match data.
 function renderMatchTable(matches) {
+  // Find the highest xG value across all matches (used to scale the bars)
   const maxXg = Math.max(...matches.map(m => Math.max(m.xg_for, m.xg_ag)));
 
+  // .map() transforms each match into an HTML string
+  // Template literals (backticks) let us embed variables with ${}
   const rows = matches.map(m => {
-    const forPct  = (m.xg_for / maxXg * 120).toFixed(0);
-    const agPct   = (m.xg_ag  / maxXg * 120).toFixed(0);
-    const diff    = m.xg_diff >= 0
-      ? `<span style="color:var(--win)">+${m.xg_diff.toFixed(2)}</span>`
-      : `<span style="color:var(--loss)">${m.xg_diff.toFixed(2)}</span>`;
+    const forWidth = (m.xg_for / maxXg * 100).toFixed(0);
+    const agWidth  = (m.xg_ag  / maxXg * 100).toFixed(0);
 
-    const verdict = m.deserved
-      ? ''
-      : `<span class="undeserved">${m.result === 'W' ? 'Lucky W' : 'Unlucky L'}</span>`;
+    // Ternary operator: condition ? value_if_true : value_if_false
+    const diffColor = m.xg_diff >= 0 ? 'var(--win)' : 'var(--loss)';
+    const diffSign  = m.xg_diff >= 0 ? '+' : '';
+    const verdict   = m.deserved ? '' :
+      `<span class="undeserved">${m.result === 'W' ? 'Lucky W' : 'Unlucky L'}</span>`;
 
     return `
       <tr>
@@ -662,100 +609,75 @@ function renderMatchTable(matches) {
         <td>${m.goals_for}–${m.goals_ag}</td>
         <td>
           <div class="xg-bar-wrap">
-            <div class="xg-bar" style="width:${forPct}px"></div>
+            <div class="xg-bar" style="width:${forWidth}px"></div>
             <span style="font-size:0.82rem">${m.xg_for.toFixed(2)}</span>
           </div>
         </td>
         <td>
           <div class="xg-bar-wrap">
-            <div class="xg-bar against" style="width:${agPct}px"></div>
+            <div class="xg-bar against" style="width:${agWidth}px"></div>
             <span style="font-size:0.82rem">${m.xg_ag.toFixed(2)}</span>
           </div>
         </td>
-        <td>${diff}</td>
+        <td><span style="color:${diffColor}">${diffSign}${m.xg_diff.toFixed(2)}</span></td>
         <td>${verdict}</td>
-      </tr>
-    `;
-  }).join('');
+      </tr>`;
+  }).join('');  // .join('') combines all strings into one with no separator
 
   document.getElementById('match-tbody').innerHTML = rows;
 }
 
 
-// ── Insights ──────────────────────────────────────────────
+// ── renderInsights() ─────────────────────────────────────
+// Generates the six insight cards from season summary data.
 function renderInsights(s, matches) {
-  const avgXgFor = (s.total_xg_for / s.matches).toFixed(2);
-  const avgXgAg  = (s.total_xg_ag  / s.matches).toFixed(2);
-  const xgDiff   = (s.total_xg_for - s.total_xg_ag).toFixed(2);
+  const avgFor    = (s.total_xg_for / s.matches).toFixed(2);
+  const avgAg     = (s.total_xg_ag  / s.matches).toFixed(2);
   const overUnder = (s.total_goals - s.total_xg_for).toFixed(2);
-  const overLabel = overUnder >= 0 ? `+${overUnder} above` : `${overUnder} below`;
+  const sign      = overUnder >= 0 ? '+' : '';
 
-  const bestMatch = matches.reduce((a, b) => a.xg_diff > b.xg_diff ? a : b);
-  const worstMatch = matches.reduce((a, b) => a.xg_diff < b.xg_diff ? a : b);
+  // .reduce() finds the match with the highest/lowest xg_diff
+  const best  = matches.reduce((a, b) => a.xg_diff > b.xg_diff ? a : b);
+  const worst = matches.reduce((a, b) => a.xg_diff < b.xg_diff ? a : b);
 
-  const html = `
+  document.getElementById('insights-grid').innerHTML = `
     <div class="insight-card">
-      <div class="insight-num">${avgXgFor}</div>
+      <div class="insight-num">${avgFor}</div>
       <div class="insight-label">Avg xG Per Game</div>
-      <p class="insight-text">
-        The Crew averaged ${avgXgFor} xG per match offensively and conceded
-        ${avgXgAg} xG per game defensively — a season xG differential of
-        ${xgDiff >= 0 ? '+' : ''}${xgDiff}.
-      </p>
+      <p class="insight-text">The Crew averaged ${avgFor} xG offensively and conceded ${avgAg} xG per game. Season xG differential: ${(s.total_xg_for - s.total_xg_ag).toFixed(2) >= 0 ? '+' : ''}${(s.total_xg_for - s.total_xg_ag).toFixed(2)}.</p>
     </div>
     <div class="insight-card">
-      <div class="insight-num">${overLabel.split(' ')[0]}</div>
+      <div class="insight-num">${sign}${overUnder}</div>
       <div class="insight-label">Goals vs xG</div>
-      <p class="insight-text">
-        The Crew scored ${s.total_goals} goals on ${s.total_xg_for} total xG —
-        ${overLabel} their expected output. This measures finishing quality and
-        goalkeeper luck across the season.
-      </p>
+      <p class="insight-text">The Crew scored ${s.total_goals} goals on ${s.total_xg_for} xG — ${sign}${overUnder} ${overUnder >= 0 ? 'above' : 'below'} expected. This reflects finishing quality and goalkeeper fortune.</p>
     </div>
     <div class="insight-card">
       <div class="insight-num">${s.lucky_wins + s.unlucky_losses}</div>
       <div class="insight-label">Undeserved Results</div>
-      <p class="insight-text">
-        ${s.lucky_wins} wins came when xG favored the opponent.
-        ${s.unlucky_losses} losses came when xG favored the Crew.
-        ${s.deserved_pct}% of results matched what the xG data suggested.
-      </p>
+      <p class="insight-text">${s.lucky_wins} wins came when xG favored the opponent. ${s.unlucky_losses} losses came when xG favored the Crew. ${s.deserved_pct}% of results matched xG.</p>
     </div>
     <div class="insight-card">
-      <div class="insight-num">${bestMatch.xg_diff.toFixed(2)}</div>
-      <div class="insight-label">Best xG Performance</div>
-      <p class="insight-text">
-        The Crew's most dominant performance by xG differential was
-        vs <strong>${bestMatch.opponent}</strong> (${bestMatch.date}),
-        with an xG For of ${bestMatch.xg_for.toFixed(2)} vs ${bestMatch.xg_ag.toFixed(2)} Against.
-      </p>
+      <div class="insight-num">+${best.xg_diff.toFixed(2)}</div>
+      <div class="insight-label">Best Performance</div>
+      <p class="insight-text">Most dominant by xG: vs <strong>${best.opponent}</strong> (${best.date}) — ${best.xg_for.toFixed(2)} xG for vs ${best.xg_ag.toFixed(2)} against.</p>
     </div>
     <div class="insight-card">
-      <div class="insight-num">${worstMatch.xg_diff.toFixed(2)}</div>
-      <div class="insight-label">Worst xG Performance</div>
-      <p class="insight-text">
-        The most one-sided game against the Crew was
-        vs <strong>${worstMatch.opponent}</strong> (${worstMatch.date}),
-        where they generated just ${worstMatch.xg_for.toFixed(2)} xG
-        and conceded ${worstMatch.xg_ag.toFixed(2)} xG.
-      </p>
+      <div class="insight-num">${worst.xg_diff.toFixed(2)}</div>
+      <div class="insight-label">Worst Performance</div>
+      <p class="insight-text">Most one-sided against: vs <strong>${worst.opponent}</strong> (${worst.date}) — ${worst.xg_for.toFixed(2)} xG for vs ${worst.xg_ag.toFixed(2)} against.</p>
     </div>
     <div class="insight-card">
       <div class="insight-num">${s.deserved_pct}%</div>
       <div class="insight-label">Results Matched xG</div>
-      <p class="insight-text">
-        Across ${s.matches} matches, ${s.deserved_pct}% of results aligned
-        with what the xG model predicted. This is a measure of how much
-        variance (luck) played a role in the Crew's 2025 season.
-      </p>
-    </div>
-  `;
-
-  document.getElementById('insights-grid').innerHTML = html;
+      <p class="insight-text">Across ${s.matches} matches, ${s.deserved_pct}% of results aligned with xG predictions — a measure of how much variance played a role this season.</p>
+    </div>`;
 }
 
+
 // ── Init ──────────────────────────────────────────────────
-loadData();
+// When the page loads, show 2026 by default.
+// If 2026 has no data, it shows the no-data state automatically.
+loadSeason('2026');
 </script>
 </body>
 </html>
