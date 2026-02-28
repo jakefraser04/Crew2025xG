@@ -10,17 +10,15 @@
 
 ---
 
-## The Question
+## Background
 
-The Columbus Crew entered 2025 without Cucho Hernández — the reigning MLS Cup MVP — and with
-Wilfried Nancy entering his third and final season as head coach. Could a reshuffled squad
-built around Diego Rossi hold its own in the Eastern Conference?
+The Columbus Crew are a Major League Soccer team located in Columbus, Ohio. I have been attending games for as long as I can remember, becoming a passionate Crew fanatic. This project serves as a way for me to showcase my data wrangling and visualization skills, while also supporting my favorite team in the world.
 
 And more importantly: **did their final record actually reflect how they played?**
 
 Expected Goals (xG) cuts through scorelines and tells you which results a team *earned*
 and which they *got away with*. This project builds an xG model from scratch and applies
-it to every Columbus Crew match in the 2025 MLS season to answer that question.
+it to every Columbus Crew match from 2025 - present.
 
 ---
 
@@ -31,7 +29,7 @@ it to every Columbus Crew match in the 2025 MLS season to answer that question.
 2. **Engineers features** from raw shot coordinates: distance to goal, shot angle, body part,
    pressure, and play pattern
 3. **Evaluates the model** with ROC-AUC, log loss, and a calibration curve
-4. **Pulls real 2025 Columbus Crew match data** via the American Soccer Analysis API
+4. **Pulls real Columbus Crew match data** via the American Soccer Analysis API
 5. **Applies the model** to generate match-by-match xG for and against
 6. **Visualizes the season** — cumulative xG trend, match differential, rolling form,
    home/away breakdown, and a shot quality heatmap
